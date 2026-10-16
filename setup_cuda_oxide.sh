@@ -97,7 +97,11 @@ fi
 # 5. Check, build, smoke test
 step "5/5 doctor, setup, vecadd on ${ARCH}"
 cargo oxide doctor 2>&1 | tail -20
+echo
+echo "Building the codegen backend (first time: 2 to 4 minutes, no output until done)..."
 cargo oxide setup 2>&1 | tail -3
+echo
+echo "Compiling and running vecadd (first time: 1 to 3 minutes, no output until done)..."
 cargo oxide run vecadd --arch "$ARCH" 2>&1 | tail -6
 
 echo
