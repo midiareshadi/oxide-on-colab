@@ -47,12 +47,22 @@ step "2/5 LLVM 21 and clang 21"
 if command -v clang-21 >/dev/null; then
     echo "clang-21 already installed, skipping."
 else
-    apt-get update -qq
-    apt-get install -y -qq wget lsb-release software-properties-common gnupg >/dev/null
-    wget -q https://apt.llvm.org/llvm.sh -O /tmp/llvm.sh
-    chmod +x /tmp/llvm.sh
-    /tmp/llvm.sh 21 >/dev/null
-    apt-get install -y -qq libclang-21-dev clang-21 >/dev/null
+    # LLVM's install script prints a long debug trace. Send all of it to a
+    # log file, and show the end of the log only if something fails.
+    LLVM_LOG=/tmp/oxide-setup-llvm.log
+    echo "Installing (about 1 minute). Full log: $LLVM_LOG"
+    if ! {
+        apt-get update -qq &&
+        apt-get install -y -qq wget lsb-release software-properties-common gnupg &&
+        wget -q https://apt.llvm.org/llvm.sh -O /tmp/llvm.sh &&
+        chmod +x /tmp/llvm.sh &&
+        /tmp/llvm.sh 21 &&
+        apt-get install -y -qq libclang-21-dev clang-21
+    } >"$LLVM_LOG" 2>&1; then
+        echo "LLVM/clang install FAILED. Last 30 lines of $LLVM_LOG:"
+        tail -30 "$LLVM_LOG"
+        exit 1
+    fi
 fi
 ln -sf /usr/bin/llc-21 /usr/local/bin/llc
 ln -sf /usr/bin/clang-21 /usr/local/bin/clang
