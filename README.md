@@ -1,7 +1,7 @@
-# oxide-on-colab
+# oxide-on-colab: cuda-oxide on a free NVIDIA T4 in Google Colab
 
 One-command setup for [NVlabs cuda-oxide](https://github.com/NVlabs/cuda-oxide)
-(write CUDA GPU kernels in Rust) on a fresh Google Colab GPU machine.
+(write CUDA GPU kernels in Rust) on a fresh, free Google Colab T4 GPU machine.
 
 Colab machines are temporary: when the session ends, everything you installed
 is gone. This script rebuilds a working cuda-oxide environment from zero, so
